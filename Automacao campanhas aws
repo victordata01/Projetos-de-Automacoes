@@ -1,0 +1,41 @@
+# Automação de Campanhas de Cobrança
+
+**Ferramentas:** SQL, Braze, AWS Athena
+
+## Contexto
+
+O processo de comunicação de cobrança dependia de extrações e atualizações manuais de listas de
+clientes para as campanhas na régua de comunicação, o que gerava atraso no disparo e dificultava
+o acompanhamento de cada etapa da jornada do cliente.
+
+## O que foi feito
+
+- Criação de consultas SQL para extrair e segmentar, de forma automática, os clientes elegíveis
+  em cada etapa da régua de cobrança (ex: pré-vencimento, vencido, negociação).
+- Integração dessas extrações com a plataforma **Braze**, alimentando os fluxos de comunicação
+  automaticamente, sem intervenção manual diária.
+- Estruturação de consultas no **AWS Athena** para consolidar dados de diferentes fontes e apoiar
+  o acompanhamento da jornada ponta a ponta.
+- Criação de um relatório de acompanhamento das comunicações da jornada, permitindo identificar
+  problemas logo no início do fluxo e agir rapidamente.
+
+## Resultado
+
+- Aumento no percentual de envios das comunicações.
+- Aumento no percentual de recebimento/pagamento por parte dos clientes.
+- Identificação mais rápida de gargalos na jornada, permitindo ajustes ainda no início do processo.
+
+## Exemplo de estrutura da consulta (ilustrativo)
+
+> Nota: query simplificada e com nomes fictícios — não reflete estrutura real de produção da empresa.
+
+```sql
+SELECT
+    cliente_id,
+    etapa_jornada,
+    dias_atraso,
+    canal_preferencial
+FROM clientes_cobranca
+WHERE status = 'ativo'
+  AND etapa_jornada IN ('pre_vencimento', 'vencido')
+```
