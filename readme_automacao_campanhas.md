@@ -55,18 +55,5 @@ causa junto ao time de marketing e corrigir a configuração antes que o problem
 
 
 ```sql
-SELECT
-    cliente_id,
-    etapa_jornada,
-    dias_atraso,
-    canal_preferencial,
-    cod_unidade,
-    status,
-    dt_vencimento,
-    saldo_devedor,
-    data_saldo
-FROM base_cobranca
-WHERE status = 'ativo'
-  AND etapa_jornada IN ('pre_vencimento', 'vencido')
-  AND (REGRAS ALINHADAS COM OS GESTORES PORÉM NÃO POSSO COLOCAR AQUI POR MOTIVOS JURIDICOS)
+-- AINDA VOU COLOCAR A QUERY -- 
 ```
