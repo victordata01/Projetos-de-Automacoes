@@ -51,7 +51,7 @@ causa junto ao time de marketing e corrigir a configuração antes que o problem
 
 ## Exemplo de estrutura da consulta (ilustrativo)
 
-> Nota: query simplificada e com nomes fictícios — não reflete a estrutura real de produção da empresa.
+> Nota: query simplificada e com nomes fictícios — não reflete a estrutura real de produção da empresa por motivos juridicos.
 
 
 ```sql
