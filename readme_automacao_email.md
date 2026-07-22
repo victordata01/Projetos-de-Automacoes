@@ -39,28 +39,5 @@ produzir um resumo no mesmo padrão e estilo.
 > informações sensíveis da empresa) antes de publicar.
 
 ```python
-import pandas as pd
-
-def carregar_dados_athena(query):
-    # conexão com AWS Athena e execução da query
-    return pd.read_sql(query, conexao_athena)
-
-def carregar_metas_excel(caminho_arquivo):
-    return pd.read_excel(caminho_arquivo)
-
-def gerar_resumo_semanal(df_dados, df_metas):
-    resumo = df_dados.merge(df_metas, on="area")
-    resumo["percentual_atingido"] = resumo["realizado"] / resumo["meta"] * 100
-    return resumo
-
-def gerar_texto_com_ia(resumo):
-    # chamada à API do Claude, usando o modelo de e-mail manual como referência de estilo
-    return gerar_email_com_claude(resumo)
-
-if __name__ == "__main__":
-    dados = carregar_dados_athena("SELECT * FROM cobranca_semanal")
-    metas = carregar_metas_excel("metas.xlsx")
-    resumo = gerar_resumo_semanal(dados, metas)
-    texto_email = gerar_texto_com_ia(resumo)
-    # enviar_email(texto_email, destinatarios)
+-- AINDA IREI TRAZER O CODIGO -- 
 ```
