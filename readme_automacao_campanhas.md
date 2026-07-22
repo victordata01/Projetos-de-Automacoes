@@ -40,7 +40,8 @@ volume de comunicações disparadas. Graças à visão diária do relatório (qu
 dia + % de envio), foi possível identificar rapidamente que algo estava fora do esperado, investigar a
 causa junto ao time de marketing e corrigir a configuração antes que o problema se agravasse.
 
-![Print do relatório mostrando o pico de comunicações identificado](./anomalia-comunicacoes.png)
+-- AQUI VAI UM PRINT DO CASO FALADO ACIMA -- 
+
 
 ## Resultado
 
@@ -52,13 +53,20 @@ causa junto ao time de marketing e corrigir a configuração antes que o problem
 
 > Nota: query simplificada e com nomes fictícios — não reflete a estrutura real de produção da empresa.
 
+
 ```sql
 SELECT
     cliente_id,
     etapa_jornada,
     dias_atraso,
-    canal_preferencial
-FROM clientes_cobranca
+    canal_preferencial,
+    cod_unidade,
+    status,
+    dt_vencimento,
+    saldo_devedor,
+    data_saldo
+FROM base_cobranca
 WHERE status = 'ativo'
   AND etapa_jornada IN ('pre_vencimento', 'vencido')
+  AND (REGRAS ALINHADAS COM OS GESTORES PORÉM NÃO POSSO COLOCAR AQUI POR MOTIVOS JURIDICOS)
 ```
