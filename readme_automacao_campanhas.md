@@ -51,9 +51,76 @@ causa junto ao time de marketing e corrigir a configuração antes que o problem
 
 ## Exemplo de estrutura da consulta (ilustrativo)
 
-> Nota: query simplificada e com nomes fictícios — não reflete a estrutura real de produção da empresa por motivos juridicos.
+> Nota: baseada na query real utilizada no processo, com nomes de tabelas/colunas e regras de negócio específicas da empresa substituídos por versões genéricas — a estrutura (CTEs, joins, filtros e ranking) reflete fielmente o que foi construído.
 
 
 ```sql
--- AINDA VOU COLOCAR A QUERY -- 
+-- Nota: nomes de tabelas, colunas e regras de negócio específicas da empresa foram
+-- substituídos por versões genéricas. Onde a regra em si é proprietária, o trecho
+-- foi marcado como "regra de negócio da empresa" no lugar da lógica original.
+
+WITH cte_codigo_cliente AS (
+    SELECT
+        id,
+        created_at AS data_adesao,
+        RANK() OVER (ORDER BY created_at) AS cod_cliente
+    FROM tabela_clientes
+),
+
+cte_parcelas AS (
+    SELECT
+        t.cliente_id,
+        cc.cod_cliente,
+        -- regra de negócio da empresa (classificação da parcela/etapa da jornada)
+        t.cpf,
+        t.id_transacao,
+        t.valor_compra,
+        t.nome_loja,
+        t.data_vencimento,
+        t.due_date,
+        t.nome_cliente,
+        t.email,
+        t.telefone,
+        t.valor_parcela,
+        t.data_compra,
+        t.data_pagamento,
+        -- regra de negócio da empresa (cálculo de dias em atraso)
+        t.dias_atraso,
+        -- regra de negócio da empresa (elegibilidade para comunicação)
+        t.fl_comunicacao
+    FROM tabela_transacoes t
+    INNER JOIN tabela_lojas       ON tabela_lojas.id = t.loja_id
+    INNER JOIN tabela_clientes    ON tabela_clientes.id = t.cliente_id
+    INNER JOIN tabela_pagamentos  ON tabela_pagamentos.transacao_id = t.id_transacao
+    INNER JOIN cte_codigo_cliente cc ON cc.id = t.cliente_id
+    WHERE status = 2
+      AND data_pagamento IS NULL
+),
+
+cte_canal AS (
+    SELECT DISTINCT
+        cpf,
+        canal_id,
+        id_conta,
+        sistema
+    FROM tabela_canais_comunicacao
+    INNER JOIN tabela_clientes ON tabela_clientes.cpf = tabela_canais_comunicacao.cpf
+    INNER JOIN tabela_contas   ON tabela_contas.id = tabela_canais_comunicacao.id_conta
+)
+
+SELECT
+    parcelas.*,
+    -- regra de negócio da empresa (definição do grupo da régua)
+    NULL AS grupo,
+    -- regra de negócio da empresa (definição do tipo de comunicação/canal)
+    NULL AS fl_tipo_comunicacao
+FROM (
+    SELECT *, ROW_NUMBER() OVER (PARTITION BY cliente_id ORDER BY data_compra) AS ordem
+    FROM cte_parcelas
+    WHERE dias_atraso BETWEEN -5 AND 87
+      AND fl_comunicacao = 1
+) AS parcelas
+LEFT JOIN cte_canal cp ON cp.cpf = parcelas.cpf
+WHERE parcelas.ordem = 1
+ORDER BY parcelas.cliente_id, parcelas.data_compra 
 ```
